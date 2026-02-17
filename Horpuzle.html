@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Teka-teki Horror</title>
+<style>
+  :root{
+    --bg:#0b0b0b;
+    --accent:#ff1f2e;
+    --muted:#666;
+    --gore-bg:linear-gradient(180deg,#2b0000,#120000);
+    --font-sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:#eee;font-family:var(--font-sans);}
+  .center-screen{
+    height:100vh;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:18px;
+  }
+  button.primary{
+    background:transparent;border:2px solid var(--accent);color:var(--accent);
+    padding:16px 36px;border-radius:10px;font-size:20px;cursor:pointer;
+    box-shadow:0 8px 24px rgba(0,0,0,.6), inset 0 -4px 0 rgba(0,0,0,.25);
+  }
+  button.primary:active{transform:translateY(2px)}
+  /* Page 2 */
+  .stage{display:none;padding:40px;min-height:100vh;box-sizing:border-box;}
+  .stage.active{display:block;}
+  .garbled{
+    max-width:900px;margin:0 auto;color:#fff;
+    line-height:1.05;font-weight:700;font-size:18px;
+    margin-bottom:24px;
+    filter:contrast(150%);
+  }
+  /* unreadable / gore text styling */
+  .goreline{
+    display:block;padding:8px 12px;margin:6px 0;
+    background:rgba(0,0,0,0.2);
+    transform:skewX(-6deg) rotate(-1deg);
+    letter-spacing:3px;
+    color:rgba(255,255,255,0.03);
+    text-shadow:
+      0 0 4px rgba(255,0,0,0.06),
+      0 0 8px rgba(0,0,0,0.4);
+    user-select:none;
+    position:relative;
+    overflow:hidden;
+  }
+  /* messy red smear overlay */
+  .goreline::after{
+    content:"";
+    position:absolute;right:-40%;top:50%;width:140%;height:120%;
+    transform:translateY(-50%) skewX(-10deg);
+    background:linear-gradient(90deg, transparent 0%, rgba(255,20,30,0.06) 20%, rgba(255,20,30,0.18) 35%, rgba(0,0,0,0.0) 60%);
+    mix-blend-mode:screen;pointer-events:none;
+  }
+  /* random glitch animation */
+  @keyframes glitch {
+    0%{transform:translateX(0) skewX(-6deg) rotate(-1deg)}
+    20%{transform:translateX(-6px) skewX(-4deg) rotate(-1deg)}
+    40%{transform:translateX(6px) skewX(-8deg) rotate(0deg)}
+    60%{transform:translateX(-4px) skewX(-3deg) rotate(-1deg)}
+    80%{transform:translateX(3px) skewX(-7deg) rotate(0deg)}
+    100%{transform:translateX(0) skewX(-6deg) rotate(-1deg)}
+  }
+  .goreline.glitch{animation:glitch .9s infinite alternate-reverse;}
+  /* YouTube link area */
+  .yt-area{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px;}
+  a.yt{background:#111;border:1px solid rgba(255,255,255,0.06);padding:10px 14px;border-radius:8px;color:#fff;text-decoration:none;font-weight:700;}
+  .status{color:var(--muted);font-size:14px;}
+  /* red input (gore) hidden initially */
+  .gore-input-wrap{display:none;margin-top:24px;justify-content:center;gap:8px;align-items:center;}
+  .gore-input-wrap.active{display:flex;}
+  input.gore-input{
+    background:var(--gore-bg);border:2px solid rgba(255,0,0,0.6);padding:12px 14px;border-radius:8px;
+    color:#ffdede;font-weight:700;letter-spacing:2px;font-size:16px;width:260px;
+    box-shadow:0 6px 20px rgba(0,0,0,.6), inset 0 -4px 0 rgba(0,0,0,.3);
+  }
+  button.check{background:var(--accent);border:none;padding:12px 14px;border-radius:8px;color:#111;font-weight:800;cursor:pointer}
+  .result{margin-top:16px;font-weight:800;}
+  /* final success */
+  .success{
+    background:linear-gradient(180deg,#ffe6e6,#ffefef);
+    color:#220000;padding:20px;border-radius:12px;margin-top:18px;text-align:center;
+  }
+  /* small footer */
+  .hint{color:var(--muted);font-size:13px;margin-top:18px;text-align:center}
+  @media (max-width:600px){
+    .goreline{font-size:14px}
+    input.gore-input{width:180px}
+  }
+</style>
+</head>
+<body>
+  <!-- PAGE 1 -->
+  <section id="page-start" class="center-screen">
+    <h1 style="margin:0;color:#fff;font-size:22px;letter-spacing:2px"> </h1>
+    <button id="startBtn" class="primary">START</button>
+    <div class="hint">Klik START untuk memulai teka-teki</div>
+  </section>
+
+  <!-- PAGE 2 -->
+  <section id="page-2" class="stage" aria-hidden="true">
+    <div class="garbled">
+      <!-- banyak kata kata error & goretext; sengaja dibuat tidak terbaca -->
+      <span class="goreline glitch">ERR0R :::  ██ ██ ██ █ █ █▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒</span>
+      <span class="goreline">xF4$#¬¬ ϟ ϟ ϟ ϟ ϟ ϟ ϟ ϟ ϟ ϟ ϟ ϟ</span>
+      <span class="goreline glitch">010101  /\/\/\  BLOODTEXT ███ ███ ███ ███</span>
+      <span class="goreline">▒▒▓▓██  !!!  unreadable-STREAM ::: ???</span>
+      <span class="goreline glitch">ΨΨΨ  ##  d̨͎̝̖̤͕̯͟r͕͔͈̬͟i̫̪͟p̟̠͟  ##  ΨΨ</span>
+      <span class="goreline">??? --- !!!!! ---  /#\ \#\ \/#/ \#\</span>
+      <span class="goreline glitch">----╳╳╳---- ERROR: DATA CORRUPT -- scroll --</span>
+      <span class="goreline">▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒</span>
+      <span class="goreline glitch">███████████ ███ ███ ██ unreadable ███ ███</span>
+      <span class="goreline">g0r3_t3xt_? not for eyes ::: DO NOT READ</span>
+      <span class="goreline glitch">#####  ✦ ✦ ✦ ✦ ✦ ✦  #####</span>
+      <span class="goreline">stream::://broken/ui///…</span>
+      <span class="goreline glitch">⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗</span>
+      <span class="goreline">ERROR 0xDEAD ::  CONNECTION LOST ::: SCROLL</span>
+      <span class="goreline glitch">»»»»»»»»»»»»»»»»»»»»»»»»</span>
+      <span class="goreline">▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒</span>
+      <span class="goreline glitch">☠ ☠ ☠ unreadable whispers ☠ ☠ ☠</span>
+      <span class="goreline">*** the message is corrupted ***</span>
+      <span class="goreline glitch">!!! CLICK THE LINK BELOW !!!</span>
+    </div>
+
+    <div style="max-width:900px;margin:0 auto;text-align:center">
+      <div class="yt-area">
+        <a id="ytBtn" class="yt" href="https://youtu.be/1AZkPdbSdg0?si=deDeVCrE1ie-XdxM" target="_blank" rel="noopener">▶ play video (YouTube)</a>
+        <div class="status" id="status">Klik link, tonton videonya lalu kembali (atau tutup tab video) untuk lanjut.</div>
+      </div>
+
+      <div class="gore-input-wrap" id="goreWrap">
+        <input id="codeInput" class="gore-input" placeholder="masukkan kode..." autocomplete="off" />
+        <button id="checkBtn" class="check">Cek</button>
+      </div>
+
+      <div id="result" class="result"></div>
+
+      <div style="margin-top:16px">
+        <button id="manualConfirm" style="background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:#fff;cursor:pointer">
+          Saya sudah menonton (jika popup diblokir)
+        </button>
+      </div>
+
+      <div class="hint">Ketik kode yang benar — <strong>horrific</strong></div>
+    </div>
+  </section>
+
+<script>
+/*
+  Mekanisme:
+  - START -> tampilkan halaman 2
+  - klik link YouTube -> buka window baru dengan window.open()
+  - script mem-poll apakah window baru ditutup (windowRef.closed)
+  - ketika ditutup, tampilkan kolom merah (gore)
+  - fallback: tombol "Saya sudah menonton" agar user bisa konfirmasi manual
+  - pengecekan kode: 'horrific' (case-insensitive)
+  NOTE: tidak mungkin memastikan user benar-benar menonton video; ini mendeteksi
+  penutupan tab window yang dibuka oleh situs ini. Jika browser memblok popup,
+  gunakan tombol konfirmasi manual.
+*/
+
+const startBtn = document.getElementById('startBtn');
+const pageStart = document.getElementById('page-start');
+const page2 = document.getElementById('page-2');
+const ytBtn = document.getElementById('ytBtn');
+const statusEl = document.getElementById('status');
+const goreWrap = document.getElementById('goreWrap');
+const manualConfirm = document.getElementById('manualConfirm');
+const checkBtn = document.getElementById('checkBtn');
+const input = document.getElementById('codeInput');
+const result = document.getElementById('result');
+
+startBtn.addEventListener('click', ()=> {
+  pageStart.style.display = 'none';
+  page2.classList.add('active');
+  page2.setAttribute('aria-hidden', 'false');
+  // optionally auto-scroll a bit to reveal text
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+// Keep reference to opened window
+let ytWindow = null;
+let checkInterval = null;
+
+ytBtn.addEventListener('click', function(e){
+  e.preventDefault();
+  const url = this.href;
+  // try to open in new window/tab and keep reference
+  try {
+    ytWindow = window.open(url, '_blank', 'noopener,noreferrer');
+  } catch(err) {
+    ytWindow = null;
+  }
+
+  if (!ytWindow) {
+    // popup blocked or not allowed — instruct manual action
+    statusEl.textContent = 'Popup diblokir. Buka link secara manual, lalu kembali dan tekan "Saya sudah menonton".';
+    // still try to open in same tab as fallback
+    window.location.href = url;
+    return;
+  }
+
+  statusEl.textContent = 'Video terbuka di tab baru. Tutup tab itu setelah menonton untuk melanjutkan...';
+  // Poll whether window is closed
+  checkInterval = setInterval(()=>{
+    try{
+      if (ytWindow && ytWindow.closed) {
+        clearInterval(checkInterval);
+        ytWindow = null;
+        revealInput();
+      }
+    } catch(err){
+      // cross-origin may throw; still try to check -> if error, still continue
+      // fallback: wait until window becomes null/closed
+    }
+  }, 800);
+});
+
+// Fallback manual confirm
+manualConfirm.addEventListener('click', ()=> {
+  revealInput();
+});
+
+function revealInput(){
+  goreWrap.classList.add('active');
+  statusEl.textContent = 'Masukkan kode!.';
+  // focus input for convenience
+  setTimeout(()=> input.focus(),150);
+}
+
+// check code
+checkBtn.addEventListener('click', checkCode);
+input.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') checkCode();
+});
+
+function checkCode(){
+  const val = input.value.trim().toLowerCase();
+  if(!val){
+    result.innerHTML = '<span style="color:#ffb3b3">Masukkan kode dulu.</span>';
+    return;
+  }
+  if(val === 'horrific'){
+    result.innerHTML = '<div class="success">KODE BENAR — Teka-teki selesai.</div>';
+    // visual flourish: clear input & disable further tries
+    input.disabled = true;
+    checkBtn.disabled = true;
+    statusEl.textContent = 'Selamat.';
+  } else {
+    result.innerHTML = '<span style="color:#ffb3b3">Kode salah Jalang!!!.</span>';
+    // small jitter to emphasize wrong
+    input.classList.add('shake');
+    setTimeout(()=> input.classList.remove('shake'),350);
+  }
+}
+
+/* optional small CSS shake via class (added dynamically) */
+const style = document.createElement('style');
+style.textContent = `
+@keyframes shake {0%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}100%{transform:translateX(0)}}
+.shake{animation:shake .35s}
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
