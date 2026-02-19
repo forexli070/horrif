@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SYSTEM WATCHING YOU</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+body{
+
+margin:0;
+height:100vh;
+background:url('https://i.supaimg.com/b3f7da69-019f-4f1b-9a66-30a7bbbce319.jpg') center/cover no-repeat;
+font-family:Creepster;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+color:red;
+
+animation:bgmove 10s infinite alternate;
+
+}
+
+@keyframes bgmove{
+
+0%{transform:scale(1);}
+100%{transform:scale(1.1);}
+
+}
+
+/* darah overlay */
+
+body::after{
+
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:linear-gradient(transparent, rgba(255,0,0,0.25));
+pointer-events:none;
+
+}
+
+/* container */
+
+.box{
+
+background:rgba(0,0,0,0.85);
+padding:40px;
+border:2px solid red;
+box-shadow:
+
+0 0 10px red,
+0 0 40px red,
+inset 0 0 20px red;
+
+text-align:center;
+
+animation:flicker 0.1s infinite;
+
+}
+
+/* flicker */
+
+@keyframes flicker{
+
+0%{opacity:1;}
+50%{opacity:0.7;}
+100%{opacity:1;}
+
+}
+
+/* title */
+
+h1{
+
+font-size:45px;
+text-shadow:
+
+0 0 10px red,
+0 0 30px red,
+0 0 60px red;
+
+animation:glitch 0.2s infinite;
+
+}
+
+/* glitch */
+
+@keyframes glitch{
+
+0%{transform:translate(0);}
+25%{transform:translate(-3px,3px);}
+50%{transform:translate(3px,-3px);}
+75%{transform:translate(-3px,-3px);}
+100%{transform:translate(3px,3px);}
+
+}
+
+/* input */
+
+input{
+
+padding:15px;
+font-size:22px;
+background:black;
+border:1px solid red;
+color:red;
+text-align:center;
+outline:none;
+box-shadow:0 0 15px red;
+
+}
+
+/* button */
+
+button{
+
+margin-top:20px;
+padding:15px 30px;
+font-size:20px;
+background:black;
+border:1px solid red;
+color:red;
+cursor:pointer;
+transition:0.3s;
+
+}
+
+button:hover{
+
+background:red;
+color:black;
+box-shadow:0 0 30px red;
+
+}
+
+/* message */
+
+#msg{
+
+margin-top:20px;
+height:30px;
+font-size:20px;
+
+}
+
+/* jumpscare */
+
+#jumpscare{
+
+position:absolute;
+width:100%;
+height:100%;
+background:black;
+display:none;
+justify-content:center;
+align-items:center;
+font-size:60px;
+color:red;
+animation:shake 0.2s infinite;
+
+}
+
+/* shake */
+
+@keyframes shake{
+
+0%{transform:translate(5px,5px);}
+25%{transform:translate(-5px,-5px);}
+50%{transform:translate(5px,-5px);}
+75%{transform:translate(-5px,5px);}
+100%{transform:translate(5px,5px);}
+
+}
+
+/* error text */
+
+.error{
+
+position:absolute;
+top:10%;
+width:100%;
+text-align:center;
+font-size:30px;
+opacity:0.2;
+animation:glitch 0.1s infinite;
+
+}
+
+</style>
+
+</head>
+<body>
+
+
+<div class="error">
+
+YOU CANNOT HIDE
+
+</div>
+
+
+<div class="box">
+
+<h1>ENTER CODE</h1>
+
+<input id="code" type="password">
+
+<br>
+
+<button onclick="check()">UNLOCK</button>
+
+<div id="msg"></div>
+
+</div>
+
+
+<div id="jumpscare">
+
+ACCESS DENIED
+
+</div>
+
+
+<audio id="ambience" autoplay loop>
+
+<source src="https://www.myinstants.com/media/sounds/creepy-noise.mp3">
+
+</audio>
+
+
+<audio id="boom">
+
+<source src="https://www.myinstants.com/media/sounds/loud-bang.mp3">
+
+</audio>
+
+
+<script>
+
+function check(){
+
+var code=document.getElementById("code").value;
+
+if(code==="Heaven"){
+
+document.getElementById("msg").innerHTML="YOU ARE FREE";
+
+setTimeout(function(){
+
+location.href="http://youtube.com/post/Ugkxl3DzokKmP5ksP2vCkwoxLqC5FOO9iinB?si=HY-UAtVD75e9fdgm";
+
+},2000);
+
+}
+
+else{
+
+document.getElementById("msg").innerHTML="WRONG";
+
+document.getElementById("boom").play();
+
+document.getElementById("jumpscare").style.display="flex";
+
+document.body.style.animation="shake 0.1s infinite";
+
+setTimeout(function(){
+
+location.href="https://youtu.be/3nPcoQwp-Ao?si=OA4BVlPh_rea4j87";
+
+},2000);
+
+}
+
+}
+
+</script>
+
+
+</body>
+</html>
