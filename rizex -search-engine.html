@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RizexEngine | Private Alpha</title>
+    <style>
+        :root {
+            --bg: #000000;
+            --surface: #050505;
+            --accent: #ff0000;
+            --text: #ffffff;
+            --text-dim: #666;
+            --link: #4d94ff;
+            --border: #1a1a1a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; }
+
+        /* UI STRUCTURE */
+        .app { display: flex; flex-direction: column; align-items: center; padding: 20px; transition: 0.5s; }
+        .hero { margin-top: 10vh; text-align: center; transition: 0.5s; }
+        .logo { width: 300px; filter: drop-shadow(0 0 10px rgba(255,0,0,0.3)); }
+        
+        .search-wrap { width: 100%; max-width: 750px; margin-top: 40px; position: relative; }
+        .search-bar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            border-radius: 2px;
+        }
+        .search-bar:focus-within { border-color: var(--accent); box-shadow: 0 0 20px rgba(255,0,0,0.2); }
+        input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 18px; }
+
+        /* RESULTS LOGIC */
+        #results { width: 100%; max-width: 900px; margin-top: 40px; display: none; }
+        .card { margin-bottom: 30px; padding: 15px; border-left: 1px solid var(--border); transition: 0.3s; animation: slideUp 0.4s ease; }
+        .card:hover { border-left-color: var(--accent); background: rgba(255,255,255,0.01); }
+        .card.gore-priority { border-left: 3px solid var(--accent); background: linear-gradient(90deg, #100, transparent); }
+        .card a { color: var(--link); text-decoration: none; font-size: 20px; font-weight: bold; }
+        .card p { color: var(--text-dim); font-size: 14px; margin-top: 8px; line-height: 1.5; }
+        .tag { display: inline-block; padding: 2px 8px; background: var(--accent); color: #000; font-size: 10px; font-weight: bold; margin-bottom: 5px; }
+
+        @keyframes slideUp { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+        /* SECURITY OVERLAY */
+        #safety { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; align-items: center; justify-content: center; color: var(--accent); font-size: 2rem; letter-spacing: 10px; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div id="safety">ENCRYPTED_ACCESS_ONLY</div>
+
+    <div class="app" id="appBody">
+        <div class="hero" id="hero">
+            <img src="https://i.supaimg.com/a7525194-dd20-4e8b-9bae-1bda833d75a1.png" alt="RizexEngine" class="logo">
+            <div style="color:var(--accent); font-size: 11px; margin-top: 10px; letter-spacing: 2px;">CORE_UNLOCKED // INFINITE_INDEX_V2</div>
+        </div>
+
+        <div class="search-wrap">
+            <div class="search-bar">
+                <input type="text" id="q" placeholder="Cari Berita Dunia atau Database Terlarang..." autofocus>
+                <span style="color:var(--accent); cursor:pointer; font-weight:bold;" onclick="exec()">[EXECUTE]</span>
+            </div>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Database IlegalDark - Expanded
+        const goreIndex = [
+            { t: "GoreCenter", u: "https://gorecenter.com" },
+            { t: "WatchPeopleDie", u: "https://watchpeopledie.tv" },
+            { t: "Kaotic", u: "https://kaotic.com" },
+            { t: "DeepGoreTube", u: "https://deepgoretube.com" },
+            { t: "LiveGore", u: "https://livegore.com" },
+            { t: "BestGore (Mirror)", u: "https://bestgore.fun" },
+            { t: "TheYNC", u: "https://theync.com" },
+            { t: "DocumentingReality", u: "https://documentingreality.com" },
+            { t: "Crazyshit", u: "https://crazyshit.com" },
+            { t: "GoreDB", u: "https://goredb.com" }
+        ];
+
+        async function exec() {
+            const query = document.getElementById('q').value.toLowerCase().trim();
+            const resBox = document.getElementById('results');
+            if(!query) return;
+
+            // UI Reset
+            document.getElementById('hero').style.marginTop = "20px";
+            document.getElementById('hero').style.transform = "scale(0.8)";
+            resBox.style.display = "block";
+            resBox.innerHTML = "<p style='color:var(--accent); animation: blink 1s infinite;'>INFILTRATING GLOBAL SERVERS...</p>";
+
+            let html = "";
+
+            // 1. INJEKSI DATABASE GORE (INTERNAL PRIORITY)
+            if(query.includes("gore") || query.includes("die") || query.includes("death") || query.includes("kill")) {
+                goreIndex.forEach(site => {
+                    html += `
+                    <div class="card gore-priority">
+                        <span class="tag">DANGER / UNFILTERED</span>
+                        <a href="${site.u}" target="_blank">${site.t}</a>
+                        <p>Akses bypass terverifikasi ke node ${site.t}. Menampilkan arsip mentah tanpa sensor.</p>
+                    </div>`;
+                });
+            }
+
+            // 2. GLOBAL NEWS ENGINE (Live Aggregator)
+            try {
+                // Fetching dari 3 jalur berbeda untuk menjamin "Banyak Halaman"
+                const responses = await Promise.all([
+                    fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query + " news")}&format=json`),
+                    fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1`)
+                ]);
+                
+                const [data1, data2] = await Promise.all(responses.map(r => r.json()));
+                
+                const allTopics = [...(data1.RelatedTopics || []), ...(data2.RelatedTopics || [])];
+
+                if(allTopics.length > 0) {
+                    allTopics.forEach(item => {
+                        if(item.Text && item.FirstURL) {
+                            html += `
+                            <div class="card">
+                                <span class="tag" style="background:#222; color:#fff">GLOBAL_SOURCE</span>
+                                <a href="${item.FirstURL}" target="_blank">${item.Text.substring(0, 85)}...</a>
+                                <p>${item.Text}</p>
+                            </div>`;
+                        }
+                    });
+                }
+            } catch (e) {
+                html += "<p style='color:orange'>BYPASS AKTIF: Menarik data dari cache satelit...</p>";
+            }
+
+            resBox.innerHTML = html || "<p>Tidak ada transmisi data yang terdeteksi untuk kata kunci ini.</p>";
+        }
+
+        document.getElementById('q').addEventListener('keypress', e => { if(e.key === 'Enter') exec(); });
+
+        // SECURITY ALPHA PRO (ANTI-INTIP)
+        document.onkeydown = e => {
+            if(e.keyCode == 123 || (e.ctrlKey && [85,73,74,67].includes(e.keyCode))) {
+                document.getElementById('safety').style.display = 'flex';
+                setTimeout(()=> document.getElementById('safety').style.display='none', 1500);
+                return false;
+            }
+        };
+
+        // Anti-Console Debugging
+        setInterval(() => {
+            if (window.outerHeight - window.innerHeight > 160 || window.outerWidth - window.innerWidth > 160) {
+                document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20%'>STOP: DEBUGGING DETECTED</h1>";
+            }
+        }, 500);
+    </script>
+    <style>
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+    </style>
+</body>
+</html>
